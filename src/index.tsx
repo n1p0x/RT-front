@@ -1,5 +1,4 @@
 import { retrieveLaunchParams } from '@telegram-apps/sdk-react'
-import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 
 import { Root } from '@/components/Root.tsx'
@@ -18,9 +17,9 @@ try {
 	)
 
 	root.render(
-		<StrictMode>
-			<Root />
-		</StrictMode>
+		// <StrictMode>
+		<Root />
+		// </StrictMode>
 	)
 } catch (e) {
 	console.log(e)

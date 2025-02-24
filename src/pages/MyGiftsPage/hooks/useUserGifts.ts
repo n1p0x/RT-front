@@ -4,7 +4,7 @@ import { UserService } from '@/service/user.service'
 
 export function useUserGifts(userId: number, initData?: string) {
 	const { data, isLoading, isFetching } = useQuery({
-		queryKey: [],
+		queryKey: ['user-gifts', { userId }],
 		queryFn: () => UserService.getUserGifts(userId, initData),
 	})
 

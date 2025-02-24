@@ -1,17 +1,26 @@
-import Lottie from 'react-lottie'
-
-import animationData from '@/assets/sticker/wallet.json'
+import lottie from 'lottie-web'
+import { useEffect, useRef } from 'react'
 
 export function WalletLottie() {
-	return (
-		<Lottie
-			options={{
+	const containerRef = useRef<HTMLDivElement>(null)
+
+	useEffect(() => {
+		if (containerRef.current) {
+			const animation = lottie.loadAnimation({
+				container: containerRef.current,
+				renderer: 'svg',
 				loop: true,
-				autoplay: true,
-				animationData,
-			}}
-			width={156}
-			height={156}
+				path: '/sticker/wallet.json',
+			})
+
+			return () => animation.destroy()
+		}
+	}, [])
+
+	return (
+		<div
+			ref={containerRef}
+			className='flex items-center justify-center w-[156px] h-[156px]'
 		/>
 	)
 }

@@ -1,3 +1,4 @@
+import { fromNano } from '@ton/core'
 import {
 	useIsConnectionRestored,
 	useTonConnectUI,
@@ -10,15 +11,13 @@ import { Button } from '@/components/ui/Button'
 import { TonIcon } from '@/components/ui/icons/TonIcon'
 import { Input } from '@/components/ui/Input'
 import { Modal } from '@/components/ui/Modal'
-import { getWalletBalance } from '@/core/balance'
 import { useUser } from '@/hooks/user/useUser'
 import { useTgData } from '@/hooks/useTgData'
-import { DepositService } from '@/service/deposit.service'
 import { IModal } from '@/types/modal.type'
 
 interface Props extends IModal {}
 
-export const DepositModal: FC<Props> = ({ modalOpen, closeModal }) => {
+export const WithdrawModal: FC<Props> = ({ modalOpen, closeModal }) => {
 	const amountRef = useRef<HTMLInputElement>(null)
 	const [balance, setBalance] = useState<string | undefined>(undefined)
 
@@ -29,23 +28,20 @@ export const DepositModal: FC<Props> = ({ modalOpen, closeModal }) => {
 	const { userId, initData } = useTgData()
 	const { data } = useUser(userId, initData)
 
-	const onDepositClick = async () => {
+	const onWithdrawClick = async () => {
 		if (!wallet || !isConnectionRestored) {
 			tonconnectUI.openModal()
 			return
 		}
 
-		if (!amountRef.current?.value) return
-
-		if (balance && amountRef.current.value > balance) {
-			toast.error('Not enough balance')
+		if (!amountRef.current?.value) {
+			toast.error('Enter amount')
 			return
 		}
 
-		if (data) {
-			tonconnectUI.sendTransaction(
-				DepositService.createTonTx(data.memo, amountRef.current.value)
-			)
+		if (balance && +amountRef.current.value > +balance) {
+			toast.error('Not enough balance')
+			return
 		}
 	}
 
@@ -54,22 +50,20 @@ export const DepositModal: FC<Props> = ({ modalOpen, closeModal }) => {
 	}
 
 	useEffect(() => {
-		const fetchBalance = async () => {
-			if (wallet) {
-				setBalance(await getWalletBalance(wallet.account.address))
-			}
-		}
+		if (data) setBalance(data.balance.toString())
+	}, [data])
 
-		fetchBalance()
-	}, [wallet])
+	useEffect(() => {
+		if (amountRef.current?.value) console.log(amountRef.current.value)
+	}, [amountRef.current])
 
 	return (
 		<Modal className='h-60' modalOpen={modalOpen} closeModal={closeModal}>
 			<div className='flex flex-col items-center gap-3 mt-3 w-full px-5'>
 				<p className='flex flex-col items-center gap-0.5'>
-					<span className='font-bold'>Deposit</span>
+					<span className='font-bold'>Withdraw</span>
 					<span className='text-gray text-xs'>
-						Enter the amount you want to deposit
+						Enter the amount you want to withdraw
 					</span>
 				</p>
 
@@ -94,7 +88,7 @@ export const DepositModal: FC<Props> = ({ modalOpen, closeModal }) => {
 							className='text-light-blue font-bold px-1'
 							onClick={onBalanceClick}
 						>
-							{Number(balance).toFixed(3)}
+							{fromNano(balance)}
 						</Button>
 					</p>
 				)}
@@ -104,10 +98,10 @@ export const DepositModal: FC<Props> = ({ modalOpen, closeModal }) => {
 				<Button
 					className='bg-light-blue rounded-full px-2 py-3 w-full max-h-[52px]'
 					disabled={!data}
-					onClick={onDepositClick}
+					onClick={onWithdrawClick}
 				>
 					{!!wallet && isConnectionRestored
-						? 'Deposit'
+						? 'Withdraw'
 						: 'Connect wallet'}
 				</Button>
 			</div>

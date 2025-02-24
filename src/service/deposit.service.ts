@@ -19,7 +19,7 @@ export const DepositService = {
 			.endCell()
 
 		return {
-			network: CHAIN.TESTNET,
+			network: import.meta.env.IS_TESTNET ? CHAIN.TESTNET : CHAIN.MAINNET,
 			validUntil: Math.floor(Date.now() / 1000) + 360,
 			messages: [
 				{

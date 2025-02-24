@@ -8,12 +8,19 @@ import {
 import { FC } from 'react'
 
 import { IModal } from '@/types/modal.type'
+import { twMerge } from 'tailwind-merge'
 
 interface Props extends IModal {
 	children: React.ReactNode
+	className?: string
 }
 
-export const Modal: FC<Props> = ({ children, modalOpen, closeModal }) => {
+export const Modal: FC<Props> = ({
+	children,
+	className,
+	modalOpen,
+	closeModal,
+}) => {
 	const [scope, animate] = useAnimate()
 
 	const y = useMotionValue(0)
@@ -41,11 +48,14 @@ export const Modal: FC<Props> = ({ children, modalOpen, closeModal }) => {
 					animate={{ opacity: 1 }}
 					onClick={handleClose}
 					ref={scope}
-					className='fixed inset-0 z-[9999]'
+					className='fixed inset-0 z-[999]'
 				>
 					<motion.div
 						id='drawer'
-						className='flex flex-col fixed bottom-0 left-0 right-0 top-auto h-[350px] max-h-[450px] w-full pt-5 gap-3 rounded-tl-3xl rounded-tr-3xl border border-white/10 bg-dark-blue'
+						className={twMerge(
+							'flex flex-col fixed bottom-0 left-0 right-0 top-auto max-h-[450px] w-full pt-5 gap-3 rounded-tl-3xl rounded-tr-3xl border border-white/10 bg-dark-blue',
+							className
+						)}
 						onClick={e => e.stopPropagation()}
 						initial={{ y: '100%' }}
 						animate={{ y: '0%' }}

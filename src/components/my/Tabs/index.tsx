@@ -8,14 +8,18 @@ export const Tabs: FC = () => {
 	const tab = searchParams.get('tab')
 
 	useEffect(() => {
-		if (searchParams.get('tab') === null) setSearchParams({ tab: 'gifts' })
+		if (searchParams.get('tab') === null) setSearchParams({ tab: 'bet' })
 	}, [searchParams, setSearchParams])
 
 	return (
 		<div className='grid grid-cols-2 items-center justify-center gap-1 p-2 bg-blue rounded-xl'>
-			<Tab tab='Gifts' value='gifts' isActive={tab === 'gifts'} />
+			<Tab tab='Bet' value='bet' isActive={tab === 'bet'} />
 
-			<Tab tab='NFTs' value='nfts' isActive={tab === 'nfts'} />
+			<Tab
+				tab='Withdraw'
+				value='withdraw'
+				isActive={tab === 'withdraw'}
+			/>
 		</div>
 	)
 }

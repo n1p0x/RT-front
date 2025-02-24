@@ -1,5 +1,5 @@
-import { FC, useEffect, useState } from 'react'
-import Lottie from 'react-lottie'
+import lottie from 'lottie-web'
+import { FC, useEffect, useRef, useState } from 'react'
 
 interface Props {
 	lottieUrl: string
@@ -7,6 +7,7 @@ interface Props {
 
 export const GiftLottie: FC<Props> = ({ lottieUrl }) => {
 	const [animationData, setAnimationData] = useState()
+	const containerRef = useRef<HTMLDivElement>(null)
 
 	useEffect(() => {
 		const fetchLottieJson = async () => {
@@ -18,16 +19,31 @@ export const GiftLottie: FC<Props> = ({ lottieUrl }) => {
 		fetchLottieJson()
 	}, [])
 
+	useEffect(() => {
+		if (containerRef.current) {
+			const animation = lottie.loadAnimation({
+				name: lottieUrl,
+				container: containerRef.current,
+				renderer: 'svg',
+				loop: false,
+				autoplay: true,
+				animationData,
+				rendererSettings: {
+					progressiveLoad: true,
+				},
+			})
+
+			return () => animation.destroy()
+		}
+	}, [animationData])
+
 	return (
 		<div className='rounded-xl overflow-hidden'>
-			<Lottie
-				options={{
-					loop: true,
-					autoplay: true,
-					animationData,
-				}}
-				width={169}
-				height={169}
+			<div
+				ref={containerRef}
+				className='w-[169px] h-[169px]'
+				onMouseEnter={() => lottie.play(lottieUrl)}
+				onMouseLeave={() => lottie.stop(lottieUrl)}
 			/>
 		</div>
 	)

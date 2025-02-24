@@ -3,9 +3,9 @@ import { Link, useLocation } from 'react-router-dom'
 import { twMerge } from 'tailwind-merge'
 
 import { ROUTE_DEPOSIT, ROUTE_MY_GIFTS, ROUTE_ROULETTE } from '@/core/routes'
-import { MyNftsIcon } from '../ui/icons/footer/MyNftsIcon'
-import { RouletteIcon } from '../ui/icons/footer/RouletteIcon'
+import { GiftIcon } from '../ui/icons/GiftIcon'
 import { PlusIcon } from '../ui/icons/PlusIcon'
+import { RouletteIcon } from '../ui/icons/RouletteIcon'
 
 export const Footer: FC = () => {
 	const location = useLocation()
@@ -50,7 +50,9 @@ export const Footer: FC = () => {
 						'text-light-blue bg-light-blue/15'
 				)}
 			>
-				<MyNftsIcon isActive={isActive(ROUTE_MY_GIFTS)} />
+				<GiftIcon
+					color={isActive(ROUTE_MY_GIFTS) ? '#0097E9' : '#fff'}
+				/>
 
 				<span>My Gifts</span>
 			</Link>

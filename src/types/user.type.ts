@@ -6,7 +6,7 @@ export interface IUser {
 	memo: string
 }
 
-export interface IUserNft {
+export interface IUserGift {
 	id: number
 	title: string
 	collectibleId: number
@@ -14,8 +14,8 @@ export interface IUserNft {
 }
 
 export interface IUserGifts {
-	gifts: undefined
-	nfts?: IUserNft[]
+	gifts?: IUserGift[]
+	nfts?: IUserGift[]
 }
 
 export interface IUserResponse extends IUser {}
