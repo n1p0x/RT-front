@@ -2,7 +2,7 @@ import { axiosBase } from '@/api/interceptors'
 import {
 	IAddUserRequest,
 	IUpdateUserRequest,
-	IUserGiftsResponse,
+	IUserProfileResponse,
 	IUserResponse,
 } from '@/types/user.type'
 
@@ -17,9 +17,9 @@ export const UserService = {
 		return response.data
 	},
 
-	async getUserGifts(userId: number, initData?: string) {
-		const response = await axiosBase.get<IUserGiftsResponse>(
-			`/user/all/${userId}`,
+	async getUserProfile(userId: number, initData?: string) {
+		const response = await axiosBase.get<IUserProfileResponse>(
+			`/user/profile/${userId}`,
 			{
 				initData,
 			}

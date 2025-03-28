@@ -20,6 +20,7 @@ export const Button: FC<Props> = ({
 		<button
 			className={twMerge(
 				'inline-flex items-center justify-center cursor-pointer disabled:opacity-60 hover:bg-light-blue/20 rounded-xl transition-colors duration-300',
+				disabled && 'cursor-default',
 				className
 			)}
 			disabled={disabled}

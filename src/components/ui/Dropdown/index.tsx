@@ -17,7 +17,7 @@ export const Dropdown: FC<Props> = ({ title }) => {
 	}
 
 	return (
-		<div className='relative'>
+		<div className='relative w-full'>
 			<button
 				className='flex items-center justify-between w-full bg-dark-gray rounded-xl px-3 py-1'
 				onClick={() => setShow(prev => !prev)}

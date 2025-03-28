@@ -1,6 +1,5 @@
-import { FC } from 'react'
-
 import { openTelegramLink } from '@telegram-apps/sdk-react'
+import { FC } from 'react'
 import { Link } from 'react-router-dom'
 
 import { Button } from '@/components/ui/Button'
@@ -8,13 +7,13 @@ import { PlusIcon } from '@/components/ui/icons/PlusIcon'
 import { TgIcon } from '@/components/ui/icons/TgIcon'
 import { DuckNotFoundLottie } from '@/components/ui/lottie/DuckNotFoundLottie'
 import { ROUTE_DEPOSIT } from '@/core/routes'
-import { IUserGift } from '@/types/user.type'
+import { IGift } from '@/types/gift.type'
 import { Gift } from '../Gift'
 import { Nft } from '../Nft'
 
 interface Props {
-	gifts?: IUserGift[]
-	nfts?: IUserGift[]
+	gifts?: IGift[]
+	nfts?: IGift[]
 }
 
 export const Withdraw: FC<Props> = ({ gifts, nfts }) => {

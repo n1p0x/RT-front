@@ -12,7 +12,7 @@ export const Tabs: FC = () => {
 	}, [searchParams, setSearchParams])
 
 	return (
-		<div className='grid grid-cols-2 items-center justify-center gap-1 p-2 bg-blue rounded-xl'>
+		<div className='grid grid-cols-2 items-center justify-center gap-1 p-2 bg-dark-blue rounded-xl'>
 			<Tab tab='Bet' value='bet' isActive={tab === 'bet'} />
 
 			<Tab

@@ -26,7 +26,7 @@ export const GiftLottie: FC<Props> = ({ lottieUrl }) => {
 				container: containerRef.current,
 				renderer: 'svg',
 				loop: false,
-				autoplay: true,
+				autoplay: false,
 				animationData,
 				rendererSettings: {
 					progressiveLoad: true,

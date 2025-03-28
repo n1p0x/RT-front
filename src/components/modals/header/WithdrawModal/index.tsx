@@ -94,9 +94,9 @@ export const WithdrawModal: FC<Props> = ({ modalOpen, closeModal }) => {
 				)}
 			</div>
 
-			<div className='fixed left-0 bottom-5 px-5 w-full font-bold'>
+			<div className='fixed left-0 bottom-5 px-5 w-full'>
 				<Button
-					className='bg-light-blue rounded-full px-2 py-3 w-full max-h-[52px]'
+					className='bg-light-blue rounded-full px-2 py-3 w-full font-semibold max-h-[52px]'
 					disabled={!data}
 					onClick={onWithdrawClick}
 				>

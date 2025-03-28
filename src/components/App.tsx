@@ -1,16 +1,16 @@
 import { useEffect } from 'react'
+import { Toaster } from 'react-hot-toast'
 import { HashRouter, Navigate, Route, Routes } from 'react-router-dom'
 
-import { ROUTE_DEPOSIT, routes } from '@/core/routes'
+import { ROUTE_ROULETTE, routes } from '@/core/routes'
 import { useAddUser } from '@/hooks/user/useAddUser'
 import { useUser } from '@/hooks/user/useUser'
 import { useTgData } from '@/hooks/useTgData'
-import { Toaster } from 'react-hot-toast'
-import { Footer } from './Footer'
+import { Footer } from './footer/Footer'
 import { Header } from './Header'
 
 export function App() {
-	const { userId, name, photoUrl, initData } = useTgData()
+	const { userId, name, photoUrl, startParam, initData } = useTgData()
 	const { isError: isUserError } = useUser(userId, initData)
 	const { addUser, isError } = useAddUser(userId, initData)
 
@@ -20,6 +20,7 @@ export function App() {
 				userId,
 				name,
 				photoUrl,
+				startParam,
 			})
 		}
 	}, [isUserError])
@@ -30,8 +31,6 @@ export function App() {
 
 	return (
 		<>
-			<Header />
-
 			<Toaster
 				position='top-left'
 				toastOptions={{
@@ -62,12 +61,17 @@ export function App() {
 			/>
 
 			<HashRouter>
+				<Header />
+
 				<Routes>
 					{routes.map(route => (
 						<Route key={route.path} {...route} />
 					))}
 
-					<Route path='*' element={<Navigate to={ROUTE_DEPOSIT} />} />
+					<Route
+						path='*'
+						element={<Navigate to={ROUTE_ROULETTE} />}
+					/>
 				</Routes>
 
 				<Footer />

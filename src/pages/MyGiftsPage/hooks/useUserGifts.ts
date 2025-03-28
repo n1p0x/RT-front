@@ -1,12 +1,12 @@
 import { useQuery } from '@tanstack/react-query'
 
-import { UserService } from '@/service/user.service'
+import { GiftService } from '@/service/gift.service'
 
 export function useUserGifts(userId: number, initData?: string) {
-	const { data, isLoading, isFetching } = useQuery({
+	const { data, isLoading, isError } = useQuery({
 		queryKey: ['user-gifts', { userId }],
-		queryFn: () => UserService.getUserGifts(userId, initData),
+		queryFn: () => GiftService.getUserGifts(userId, initData),
 	})
 
-	return { data, isLoading, isFetching }
+	return { data, isLoading, isError }
 }

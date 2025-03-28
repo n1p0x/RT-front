@@ -1,112 +1,186 @@
+import { fromNano } from '@ton/core'
 import { AnimatePresence, motion } from 'framer-motion'
-import { useEffect, useState } from 'react'
+import { FC, useEffect, useState } from 'react'
+import { twMerge } from 'tailwind-merge'
 
+import { WinnerModal } from '@/components/modals/WinnerModal'
 import { Players } from '@/components/roulette/Players'
 import { Spin } from '@/components/roulette/Spin'
 import { Wheel } from '@/components/roulette/Wheel'
 import { GiftIcon } from '@/components/ui/icons/GiftIcon'
 import { TimerIcon } from '@/components/ui/icons/TimerIcon'
 import { TonIcon } from '@/components/ui/icons/TonIcon'
-import { IPlayer } from '@/types/roulette.type'
+import { Loading } from '@/components/ui/Loading'
+import { useTgData } from '@/hooks/useTgData'
+import { ISpinPlayer } from '@/types/game.type'
+import { getSpinContent } from '@/utils/game'
+import { getLeftTime } from '@/utils/time'
+import { useRound } from './hooks/useRound'
+import { useWinner } from './hooks/useWinner'
 
-export function RoulettePage() {
-	const [isWheelVisible, setIsWheelVisible] = useState<boolean>(true)
-	const [leftTime, setLeftTime] = useState<number>(120)
+export const RoulettePage: FC = () => {
+	const [leftTime, setLeftTime] = useState<number>(-1)
+	const [showSpin, setShowSpin] = useState<boolean>(false)
+	const [modalOpen, setModalOpen] = useState<boolean>(true)
+	const [spinContent, setSpinContent] = useState<ISpinPlayer[]>([])
 
-	const total = 1000
-	const players: IPlayer[] = [
-		{ name: 'Игрок 1', chance: 0.55 },
-		{ name: 'Игрок 2', chance: 0.05 },
-		{ name: 'Игрок 3', chance: 0.1 },
-		{ name: 'Игрок 4', chance: 0.1 },
-		{ name: 'Игрок 5', chance: 0.1 },
-		{ name: 'Игрок 6', chance: 0.1 },
-	]
-
-	const variants = {
-		initial: { opacity: 0, scale: 0.99 },
-		animate: { opacity: 1, scale: 1 },
-		exit: { opacity: 0, scale: 0.95 },
-	}
-
-	useEffect(() => {
-		const interval = setInterval(
-			() => setLeftTime(prev => (prev > 0 ? prev - 1 : 0)),
-			1000
-		)
-
-		return () => clearInterval(interval)
-	}, [])
+	const { userId, initData } = useTgData()
+	const { data: round, isLoading, refetch: refetchRound } = useRound(initData)
+	const {
+		data: winner,
+		isError,
+		refetch: refetchWinner,
+	} = useWinner(round?.id, initData)
 
 	useEffect(() => {
-		if (leftTime === 0) setIsWheelVisible(false)
+		if (round?.startedAt) {
+			const leftTime = getLeftTime(round.startedAt, 3 * 60 * 1000)
+			setLeftTime(leftTime)
+		}
+	}, [round])
+
+	useEffect(() => {
+		if (leftTime > 0) {
+			const interval = setInterval(
+				() => setLeftTime(prev => (prev - 1 > 0 ? prev - 1 : 0)),
+				1000
+			)
+			return () => clearInterval(interval)
+		}
 	}, [leftTime])
 
-	return (
-		<div className='flex flex-col items-center gap-1 mt-2 mb-24 overflow-hidden'>
-			<div className='grid grid-cols-3 justify-center gap-3 font-semibold px-5'>
-				<p className='flex items-center justify-center gap-1 p-2 bg-dark-gray rounded-3xl'>
-					<span>{`${Math.floor(leftTime / 60)
-						.toString()
-						.padStart(2, '0')}:${Math.floor(leftTime % 60)
-						.toString()
-						.padStart(2, '0')}`}</span>
+	useEffect(() => {
+		if (leftTime === 0) refetchWinner()
+	}, [leftTime])
 
-					<TimerIcon />
-				</p>
+	useEffect(() => {
+		if (leftTime % 5 === 1) refetchRound()
+	}, [leftTime])
 
-				<p className='flex items-center justify-center gap-1 p-2 bg-dark-gray rounded-3xl'>
-					<span>8 / 100</span> <GiftIcon color='#fff' />
-				</p>
+	// start spinning
+	useEffect(() => {
+		if (winner && !isError && round?.players && round.startedAt) {
+			if (getLeftTime(round.startedAt, 3 * 60 * 1000) !== 0) return
 
-				<p className='flex items-center justify-center gap-1 p-2 bg-dark-gray rounded-3xl'>
-					<span>{total}</span> <TonIcon width={16} height={16} />
-				</p>
+			const content = getSpinContent(
+				round.players,
+				winner,
+				round.totalTickets
+			)
+			setSpinContent(content)
+
+			setShowSpin(true)
+		}
+	}, [winner])
+
+	useEffect(() => {
+		if (showSpin) {
+			const timeout = setTimeout(() => {
+				refetchRound()
+				setModalOpen(true)
+				setShowSpin(false)
+			}, 11000)
+			return () => clearTimeout(timeout)
+		}
+	}, [showSpin])
+
+	return isLoading ? (
+		<Loading className='fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-white' />
+	) : round ? (
+		<>
+			<div
+				className={twMerge(
+					'flex flex-col items-center gap-1 mt-2 mb-24 overflow-hidden',
+					modalOpen && 'blurred'
+				)}
+			>
+				<div className='grid grid-cols-3 justify-center gap-3 font-semibold px-5'>
+					<p className='flex items-center justify-center gap-1 p-2 bg-dark-gray rounded-3xl'>
+						<span>
+							{leftTime !== -1
+								? `${Math.floor(leftTime / 60)
+										.toString()
+										.padStart(2, '0')}:${Math.floor(
+										leftTime % 60
+								  )
+										.toString()
+										.padStart(2, '0')}`
+								: '-'}
+						</span>
+
+						<TimerIcon />
+					</p>
+
+					<p className='flex items-center justify-center gap-1 p-2 bg-dark-gray rounded-3xl'>
+						<span>{round.totalGifts} / 100</span>
+						<GiftIcon color='#fff' />
+					</p>
+
+					<p className='flex items-center justify-center gap-1 p-2 bg-dark-gray rounded-3xl'>
+						<span>{fromNano(round.totalBet)}</span>
+						<TonIcon width={16} height={16} />
+					</p>
+				</div>
+
+				<div className='flex justify-center items-center h-[300px] max-h-[300px] mb-2 w-full'>
+					<AnimatePresence mode='wait'>
+						{showSpin && round.players ? (
+							<motion.div
+								key='spin'
+								variants={{
+									initial: { opacity: 0, scale: 0.99 },
+									animate: { opacity: 1, scale: 1 },
+									exit: { opacity: 0, scale: 0.95 },
+								}}
+								initial='initial'
+								animate='animate'
+								exit='exit'
+								transition={{ duration: 0.5 }}
+								className='absolute w-full'
+							>
+								<Spin spinContent={spinContent} />
+							</motion.div>
+						) : (
+							<motion.div
+								key='wheel'
+								variants={{
+									initial: { opacity: 0, scale: 0.99 },
+									animate: { opacity: 1, scale: 1 },
+									exit: { opacity: 0, scale: 0.95 },
+								}}
+								initial='initial'
+								animate='animate'
+								exit='exit'
+								transition={{ duration: 0.5 }}
+								className='absolute'
+							>
+								<Wheel
+									totalBet={fromNano(round.totalBet)}
+									totalTickets={round.totalTickets}
+									players={round.players}
+								/>
+							</motion.div>
+						)}
+					</AnimatePresence>
+				</div>
+
+				{!!round.totalTickets && (
+					<Players
+						totalTickets={round.totalTickets}
+						players={round.players}
+					/>
+				)}
 			</div>
 
-			<div className='relative flex justify-center items-center h-[300px] max-h-[300px] mb-2'>
-				<AnimatePresence
-					mode='wait'
-					onExitComplete={() =>
-						setIsWheelVisible(prev => (prev ? false : true))
-					}
-				>
-					{isWheelVisible ? (
-						<motion.div
-							key='wheel'
-							variants={variants}
-							initial='initial'
-							animate='animate'
-							exit='exit'
-							transition={{ duration: 0.5 }}
-							className='absolute'
-						>
-							<Wheel total={total} players={players} />
-						</motion.div>
-					) : (
-						<motion.div
-							key='spin'
-							variants={variants}
-							initial='initial'
-							animate='animate'
-							exit='exit'
-							transition={{ duration: 0.5 }}
-							className='absolute'
-						>
-							<Spin players={players} />
-						</motion.div>
-					)}
-				</AnimatePresence>
-
-				{/* <button
-					onClick={() => setIsWheelVisible(prev => !prev)}
-					className='absolute bottom-0 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600'
-				>
-					Переключить
-				</button> */}
-			</div>
-
-			<Players players={players} />
-		</div>
+			{modalOpen && (
+				<WinnerModal
+					totalBet={1000}
+					modalOpen={modalOpen}
+					closeModal={() => setModalOpen(false)}
+				/>
+			)}
+		</>
+	) : (
+		<></>
 	)
 }

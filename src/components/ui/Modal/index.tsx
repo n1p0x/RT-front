@@ -6,9 +6,9 @@ import {
 	useMotionValue,
 } from 'framer-motion'
 import { FC } from 'react'
+import { twMerge } from 'tailwind-merge'
 
 import { IModal } from '@/types/modal.type'
-import { twMerge } from 'tailwind-merge'
 
 interface Props extends IModal {
 	children: React.ReactNode

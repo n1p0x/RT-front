@@ -12,8 +12,8 @@ import { Loading } from '@/components/ui/Loading'
 import { GiftLottie } from '@/components/ui/lottie/GiftLottie'
 import { useTgData } from '@/hooks/useTgData'
 import { useAddNftDeposit } from '@/pages/DepositPage/hooks/useAddNftDeposit'
-import { NftService } from '@/service/nft.service'
-import { INft } from '@/types/nft.type'
+import { GiftService } from '@/service/gift.service'
+import { INft } from '@/types/gift.type'
 
 interface Props extends INft {}
 
@@ -39,17 +39,16 @@ export const Nft: FC<Props> = ({
 
 		try {
 			await tonConnectUI.sendTransaction(
-				NftService.createNftTx(wallet.account.address, nftAddress)
+				GiftService.createNftTx(wallet.account.address, nftAddress)
 			)
 
 			addNftDeposit({
-				// @ts-ignore
 				userId,
 				sender: address,
 				address: nftAddress,
 			})
 		} catch (e: any) {
-			toast.error(e)
+			console.log(e)
 		}
 	}
 

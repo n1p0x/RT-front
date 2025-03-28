@@ -1,4 +1,5 @@
 import { FC, useEffect } from 'react'
+import toast from 'react-hot-toast'
 
 import { Button } from '@/components/ui/Button'
 import { GiftIcon } from '@/components/ui/icons/GiftIcon'
@@ -6,12 +7,17 @@ import { Loading } from '@/components/ui/Loading'
 import { GiftLottie } from '@/components/ui/lottie/GiftLottie'
 import { useTgData } from '@/hooks/useTgData'
 import { useAddGiftWithdraw } from '@/pages/MyGiftsPage/hooks/useAddGiftWithdraw'
-import { IUserGift } from '@/types/user.type'
-import toast from 'react-hot-toast'
+import { IGift } from '@/types/gift.type'
 
-interface Props extends IUserGift {}
+interface Props extends IGift {}
 
-export const Gift: FC<Props> = ({ id, title, collectibleId, lottieUrl }) => {
+export const Gift: FC<Props> = ({
+	id,
+	title,
+	collectibleId,
+	lottieUrl,
+	isBet,
+}) => {
 	const { userId, initData } = useTgData()
 	const { addGiftWithdraw, isPending, isSuccess, isError } =
 		useAddGiftWithdraw(userId, initData)
@@ -41,11 +47,17 @@ export const Gift: FC<Props> = ({ id, title, collectibleId, lottieUrl }) => {
 			</p>
 
 			<Button
-				className='bg-light-blue rounded-lg w-full font-semibold px-2 py-1'
-				disabled={isPending}
+				className='bg-light-blue rounded-lg w-full font-semibold px-2 py-1 h-8 max-h-8'
+				disabled={isBet || isPending}
 				onClick={onClick}
 			>
-				{isPending ? <Loading size={10} /> : 'Withdraw'}
+				{isBet ? (
+					'In Game'
+				) : isPending ? (
+					<Loading size={14} className='text-white' />
+				) : (
+					'Withdraw'
+				)}
 			</Button>
 
 			<span className='absolute top-0 right-0'>

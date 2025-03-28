@@ -23,3 +23,23 @@ input::-webkit-inner-spin-button {
 input[type='number'] {
 	-moz-appearance: textfield;
 }
+
+@layer utilities {
+	.spin {
+		animation: spinning 5s ease-in-out 0.25s alternate-reverse;
+	}
+
+	.blurred {
+		filter: blur(2px) opacity(40%);
+	}
+}
+
+@keyframes spinning {
+	from {
+		translate: 0;
+	}
+
+	to {
+		translate: 6000px;
+	}
+}

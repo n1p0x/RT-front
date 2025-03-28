@@ -6,26 +6,22 @@ export interface IUser {
 	memo: string
 }
 
-export interface IUserGift {
-	id: number
-	title: string
-	collectibleId: number
-	lottieUrl: string
-}
-
-export interface IUserGifts {
-	gifts?: IUserGift[]
-	nfts?: IUserGift[]
+export interface IUserProfile {
+	balance: number
+	refs: number
+	earned: number
+	games: number
 }
 
 export interface IUserResponse extends IUser {}
 
-export interface IUserGiftsResponse extends IUserGifts {}
+export interface IUserProfileResponse extends IUserProfile {}
 
 export interface IAddUserRequest {
 	userId: number
 	name?: string
 	photoUrl?: string
+	startParam?: string
 }
 
 export interface IUpdateUserRequest {

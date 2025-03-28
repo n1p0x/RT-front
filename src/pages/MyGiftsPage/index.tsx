@@ -2,6 +2,7 @@ import { FC, useEffect } from 'react'
 import { useSearchParams } from 'react-router-dom'
 
 import { Bet } from '@/components/my/bet/Bet'
+import { Fee } from '@/components/my/Fee'
 import { Tabs } from '@/components/my/Tabs'
 import { Withdraw } from '@/components/my/withdraw/Withdraw'
 import { Loading } from '@/components/ui/Loading'
@@ -13,13 +14,10 @@ export const MyGiftsPage: FC = () => {
 	const tab = searchParams.get('tab')
 
 	const { userId, initData } = useTgData()
-	// @ts-ignore
-	const { data, isLoading, isFetching } = useUserGifts(userId, initData)
+	const { data, isLoading } = useUserGifts(userId, initData)
 
 	useEffect(() => {
-		if (data) {
-			if (!data.gifts) setSearchParams({ tab: 'bet' })
-		}
+		if (data && !data.gifts) setSearchParams({ tab: 'bet' })
 	}, [data])
 
 	return (
@@ -29,6 +27,8 @@ export const MyGiftsPage: FC = () => {
 			<div className='mt-2'>
 				{isLoading ? (
 					<Loading className='fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-white' />
+				) : data && !data.isAvailable ? (
+					<Fee fee={data.fee} />
 				) : tab === 'bet' ? (
 					<Bet gifts={data?.gifts} nfts={data?.nfts} />
 				) : tab === 'withdraw' ? (
