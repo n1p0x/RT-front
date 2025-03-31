@@ -1,7 +1,7 @@
 import {
-	useIsConnectionRestored,
-	useTonAddress,
-	useTonWallet,
+    useIsConnectionRestored,
+    useTonAddress,
+    useTonWallet,
 } from '@tonconnect/ui-react'
 import { FC, useEffect, useState } from 'react'
 
@@ -17,7 +17,6 @@ import { Nft } from '../Nft'
 
 export const Nfts: FC = () => {
 	const [enabled, setEnabled] = useState<boolean>(false)
-	const [collection, setCollections] = useState<string[]>([])
 
 	const wallet = useTonWallet()
 	const address = useTonAddress(true)

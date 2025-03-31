@@ -1,8 +1,8 @@
 import {
-	isTMA,
-	LaunchParams,
-	mockTelegramEnv,
-	retrieveLaunchParams,
+    isTMA,
+    LaunchParams,
+    mockTelegramEnv,
+    retrieveLaunchParams,
 } from '@telegram-apps/sdk-react'
 
 if (import.meta.env.DEV) {
@@ -63,5 +63,6 @@ if (import.meta.env.DEV) {
 				},
 			})
 		}
+        console.log(lp)
 	})()
 }

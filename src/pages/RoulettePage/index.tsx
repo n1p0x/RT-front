@@ -24,7 +24,7 @@ export const RoulettePage: FC = () => {
 	const [modalOpen, setModalOpen] = useState<boolean>(true)
 	const [spinContent, setSpinContent] = useState<ISpinPlayer[]>([])
 
-	const { userId, initData } = useTgData()
+	const { initData } = useTgData()
 	const { data: round, isLoading, refetch: refetchRound } = useRound(initData)
 	const {
 		data: winner,
