@@ -1,4 +1,4 @@
-import lottie from 'lottie-web'
+import lottie from 'lottie-web/build/player/lottie_light'
 import { FC, useEffect, useRef, useState } from 'react'
 
 interface Props {
