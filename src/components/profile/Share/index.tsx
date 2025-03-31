@@ -1,12 +1,12 @@
 import {
-	hapticFeedbackImpactOccurred,
-	shareURL,
+    hapticFeedbackImpactOccurred,
+    shareURL,
 } from '@telegram-apps/sdk-react'
-import { CopyIcon } from 'lucide-react'
 import { FC } from 'react'
 import toast from 'react-hot-toast'
 
 import { Button } from '@/components/ui/Button'
+import { CopyIcon } from '@/components/ui/icons/CopyIcon'
 import { useTgData } from '@/hooks/useTgData'
 
 export const Share: FC = () => {
